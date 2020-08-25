@@ -1,5 +1,5 @@
 name: CoinSystem
-version: BETA-1.0
+version: BETA-1.1
 main: me.luucx7.coinsystem.CoinSystem
 author: Luucx7
 commands:

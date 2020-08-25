@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -40,22 +41,32 @@ public class CoinsHandler {
 
 	public static void changeData(CommandSender sender, UUID uuid, Action action, int newValue) {
 		Bukkit.getScheduler().runTaskAsynchronously(CoinSystem.instance, () -> {
-			String sql = "SELECT uuid FROM players WHERE uuid='"+uuid.toString().replace("-", "")+"'";
+			String sql = "SELECT * FROM players WHERE uuid='"+uuid.toString().replace("-", "")+"'";
+			
+			CoinPlayer player = null;
+			Optional<CoinPlayer> coinPlayerOP = players.stream().filter(cp -> cp.getUUID().equals(uuid)).findAny();
+			
 			try {
-				PreparedStatement stmt = ConnectionFactory.connection.prepareStatement(sql);
-				ResultSet rs = stmt.executeQuery();
+				// Load from memory
+				if (coinPlayerOP.isPresent()) {
+					player = coinPlayerOP.get();
+					player.setName(Bukkit.getPlayer(uuid).getName());
+					
+				// Load from database
+				} else {
+					PreparedStatement stmt = ConnectionFactory.connection.prepareStatement(sql);
+					ResultSet rs = stmt.executeQuery();
 
-				if (!rs.next()) {
-					if (sender != null) sender.sendMessage("§cThis player do not exist.");
-					return;
+					if (!rs.next()) {
+						if (sender != null) sender.sendMessage("§cThis player do not exist.");
+						return;
+					}
+	
+					do {
+						player = new CoinPlayer(uuid, rs.getInt(2));
+						player.setName(Bukkit.getOfflinePlayer(uuid).getName());
+					} while (rs.next());
 				}
-				
-				CoinPlayer player = null;
-				
-				do {
-					player = new CoinPlayer(uuid, rs.getInt("coins"));
-					player.setName(Bukkit.getOfflinePlayer(uuid).getName());
-				} while (rs.next());
 				
 				switch (action) {
 				case CHECK:
@@ -99,10 +110,11 @@ public class CoinsHandler {
 
 				if (!rs.next()) {
 					createData(uniqueID);
+					return;
 				}
 
 				do {
-					new CoinPlayer(uniqueID, rs.getInt("coins")).saveCache();
+					new CoinPlayer(uniqueID, rs.getInt(2)).saveCache();
 				} while(rs.next());
 
 			} catch(SQLException ex) {
@@ -125,7 +137,7 @@ public class CoinsHandler {
 				}
 
 				do {
-					player.setCoins(rs.getInt("coins"));
+					player.setCoins(rs.getInt(2));
 				} while(rs.next());
 
 			} catch(SQLException ex) {

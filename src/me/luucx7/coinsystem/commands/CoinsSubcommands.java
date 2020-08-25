@@ -26,8 +26,10 @@ public class CoinsSubcommands {
 		case "take":
 		case "set":
 			changeData();
+			return;
 		default:
 			help(sender);
+			return;
 		}
 	}
 	
@@ -69,12 +71,12 @@ public class CoinsSubcommands {
 			sender.sendMessage("§cThis player does not exist!");
 			return;
 		}
-		if (!Utils.isNumeric(args[3])) {
+		if (!Utils.isNumeric(args[2])) {
 			sender.sendMessage("§cInvalid argument");
 			return;
 		}
 		
-		int value = Integer.parseInt(args[3]);
+		int value = Integer.parseInt(args[2]);
 		
 		switch (args[0]) {
 		case "give":

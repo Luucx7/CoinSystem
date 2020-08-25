@@ -25,4 +25,8 @@ public class CoinSystem extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
 		this.getCommand("coin").setExecutor(new CoinsCommand());
 	}
+	
+	public void onDisable() {
+		ConnectionFactory.closeConnection(ConnectionFactory.connection);
+	}
 }
