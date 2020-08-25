@@ -1,0 +1,7 @@
+name: CoinSystem
+version: BETA-1.0
+main: me.luucx7.coinsystem.CoinSystem
+author: Luucx7
+commands:
+    coin:
+        aliases: [coins, ngcoin, ngcoins]
