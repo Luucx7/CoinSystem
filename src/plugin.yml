@@ -1,7 +1,8 @@
 name: CoinSystem
-version: BETA-1.1
+version: BETA-1.2
 main: me.luucx7.coinsystem.CoinSystem
 author: Luucx7
+softdepend: [PlaceholderAPI]
 commands:
     coin:
         aliases: [coins, ngcoin, ngcoins]

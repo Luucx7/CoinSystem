@@ -146,6 +146,7 @@ public class CoinsHandler {
 		});
 	}
 
+
 	public static void saveData(CoinPlayer player) {
 		Bukkit.getScheduler().runTaskAsynchronously(CoinSystem.instance, () -> {
 			String sql = "UPDATE players SET coins = ? WHERE uuid = '"+player.getUUID().toString().replace("-", "")+"'";
